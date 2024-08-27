@@ -8,7 +8,7 @@ class CloudHandler:
     def __init__(self, cloud_provider='aws'):
         self.cloud_provider = cloud_provider
         if cloud_provider == 'aws':
-            self.client = boto3.client('ec2')
+            self.client = boto3.client('ec2', region_name='us-east-1')
         elif cloud_provider == 'azure':
             self.credential = DefaultAzureCredential()
             self.subscription_id = 'your-azure-subscription-id'
