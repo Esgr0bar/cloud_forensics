@@ -5,7 +5,7 @@ from forensics.memory_dump import MemoryDump
 from forensics.packet_capture import PacketCapture
 from forensics.report_generator import ReportGenerator
 
-class CyberForensicsApp:
+class ForensicsCloudApp:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Cyber Forensics Toolkit")
