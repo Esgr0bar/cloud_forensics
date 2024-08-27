@@ -16,7 +16,19 @@ This repository provides a Python-based toolkit for performing cyber forensic in
 - Install dependencies:
   ```bash
   pip install -r requirements.txt
+  
+### Running the Application:
+Dependencies: Ensure that the required tools (TShark, Volatility, LiME, etc.) are installed and accessible from the system's PATH.
+ 
+ ```bash
+sudo apt-get install tshark volatility
+```
 
+### Start the Application:
+
+```bash
+python main.py
+```
   
 ### Further Development:
 - **Automation**: Add CI/CD pipelines for automated testing and deployment using GitHub Actions.
