@@ -5,7 +5,7 @@ from forensics.memory_dump import MemoryDump
 from forensics.packet_capture import PacketCapture
 from forensics.report_generator import ReportGenerator
 
-class ForensicsCloudApp:
+class CyberForensicsApp:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Cyber Forensics Toolkit")
@@ -42,21 +42,23 @@ class ForensicsCloudApp:
 
     def capture_memory_dump(self):
         output_path = filedialog.asksaveasfilename(defaultextension=".lime")
-        result = self.memory_dump.capture_memory_dump(output_path)
-        messagebox.showinfo("Memory Dump", result)
+        target = self.ask_for_input("Enter Target OS (linux/windows):")
+        result = self.memory_dump.capture_memory_dump(output_path, target=target)
+        analysis_result = self.memory_dump.analyze_dump(output_path)
+        messagebox.showinfo("Memory Dump", f"{result}\n{analysis_result}")
 
     def capture_packets(self):
         output_file = filedialog.asksaveasfilename(defaultextension=".pcap")
         iface = self.ask_for_input("Enter Network Interface:")
         result = self.packet_capture.capture_packets(iface, output_file)
-        messagebox.showinfo("Packet Capture", result)
+        analysis_result = self.packet_capture.analyze_packets(output_file)
+        messagebox.showinfo("Packet Capture", f"{result}\n{analysis_result}")
 
     def generate_report(self):
-        findings = ["Snapshot created", "Memory dump captured", "Packets captured"]
+        findings = ["Snapshot created", "Memory dump captured and analyzed", "Packets captured and analyzed"]
         report_path = filedialog.asksaveasfilename(defaultextension=".pdf")
         self.report_generator.generate_report(findings, report_path)
         messagebox.showinfo("Report Generated", f"Report saved to {report_path}")
 
     def ask_for_input(self, prompt):
         return tk.simpledialog.askstring("Input", prompt)
-
