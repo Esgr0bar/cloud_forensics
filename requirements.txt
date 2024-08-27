@@ -1,0 +1,9 @@
+boto3
+azure-identity
+azure-mgmt-compute
+google-cloud-compute
+scapy
+volatility3
+tshark
+reportlab
+tkinter
