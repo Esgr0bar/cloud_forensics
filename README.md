@@ -34,6 +34,3 @@ python main.py
 - **Automation**: Add CI/CD pipelines for automated testing and deployment using GitHub Actions.
 - **Advanced Analytics**: Incorporate AI/ML techniques for anomaly detection in captured data.
 - **Customizable Dashboard**: Develop a web-based dashboard using Flask or Django for real-time monitoring and analysis.
-
-This structure and feature set will make your repository a versatile tool for cyber forensics, applicable across various cloud platforms and adaptable to evolving cybersecurity threats.
-
