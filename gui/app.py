@@ -34,6 +34,12 @@ class ForensicsCloudApp:
         self.instance_id_entry = ttk.Entry(self.window, width=40)
         self.instance_id_entry.pack()
 
+        # Target OS for Memory Dump
+        self.target_os_label = ttk.Label(self.window, text="Enter Target OS for Memory Dump (linux/windows):")
+        self.target_os_label.pack()
+        self.target_os_entry = ttk.Entry(self.window, width=40)
+        self.target_os_entry.pack()
+
         # Network Interface Input
         self.interface_label = ttk.Label(self.window, text="Enter Network Interface (e.g., eth0):")
         self.interface_label.pack()
@@ -62,17 +68,17 @@ class ForensicsCloudApp:
         messagebox.showinfo("Snapshot Created", f"Snapshot ID: {snapshot_id}")
 
     def capture_memory_dump(self):
-        target = self.ask_for_input("Enter Target OS (linux/windows):")
+        target_os = self.target_os_entry.get()
         output_path = filedialog.asksaveasfilename(defaultextension=".lime")
         
         memory_dump = MemoryDump()
-        result = memory_dump.capture_memory_dump(output_path, target=target)
+        result = memory_dump.capture_memory_dump(output_path, target=target_os)
         analysis_result = memory_dump.analyze_dump(output_path)
         messagebox.showinfo("Memory Dump", f"{result}\n{analysis_result}")
 
     def capture_packets(self):
-        output_file = filedialog.asksaveasfilename(defaultextension=".pcap")
         iface = self.interface_entry.get()
+        output_file = filedialog.asksaveasfilename(defaultextension=".pcap")
 
         packet_capture = PacketCapture()
         result = packet_capture.capture_packets(iface, output_file)
@@ -84,11 +90,8 @@ class ForensicsCloudApp:
         report_path = filedialog.asksaveasfilename(defaultextension=".pdf")
         
         report_generator = ReportGenerator()
-        self.report_generator.generate_report(findings, report_path)
+        report_generator.generate_report(findings, report_path)
         messagebox.showinfo("Report Generated", f"Report saved to {report_path}")
-
-    def ask_for_input(self, prompt):
-        return tk.simpledialog.askstring("Input", prompt)
 
     def run(self):
         self.window.mainloop()
