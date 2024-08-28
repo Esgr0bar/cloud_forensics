@@ -5,18 +5,23 @@ from google.cloud import compute_v1
 from google.auth import default
 
 class CloudHandler:
-    def __init__(self, cloud_provider='aws'):
+    def __init__(self, cloud_provider='aws', subscription_id=None, region=None, resource_group=None, zone=None, project_id=None):
         self.cloud_provider = cloud_provider
+        self.region = region
+        self.resource_group = resource_group
+        self.zone = zone
+        self.project_id = project_id
+        self.subscription_id = subscription_id
+        
         if cloud_provider == 'aws':
-            self.client = boto3.client('ec2', region_name='us-east-1')
+            self.client = boto3.client('ec2', region_name=self.region)
         elif cloud_provider == 'azure':
             self.credential = DefaultAzureCredential()
-            self.subscription_id = 'your-azure-subscription-id'
             self.client = ComputeManagementClient(self.credential, self.subscription_id)
         elif cloud_provider == 'gcp':
             self.client = compute_v1.InstancesClient()
-            self.project_id, self.credentials = default()
-            self.zone = 'your-gcp-zone'
+            if not self.project_id:
+                self.project_id, self.credentials = default()
 
     def create_snapshot(self, instance_id):
         if self.cloud_provider == 'aws':
@@ -26,16 +31,15 @@ class CloudHandler:
             )
             return response['SnapshotId']
         elif self.cloud_provider == 'azure':
-            # Assuming instance_id is the name of the VM in Azure
             snapshot_name = f"{instance_id}-snapshot"
             async_snapshot_creation = self.client.snapshots.begin_create_or_update(
-                'your-resource-group-name',
+                self.resource_group,
                 snapshot_name,
                 {
-                    "location": 'your-region',
+                    "location": self.region,
                     "creation_data": {
                         "create_option": "Copy",
-                        "source_uri": f"/subscriptions/{self.subscription_id}/resourceGroups/your-resource-group-name/providers/Microsoft.Compute/disks/{instance_id}"
+                        "source_uri": f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Compute/disks/{instance_id}"
                     }
                 }
             )
@@ -63,15 +67,15 @@ class CloudHandler:
             return response['Instances'][0]['InstanceId']
         elif self.cloud_provider == 'azure':
             async_vm_creation = self.client.virtual_machines.begin_create_or_update(
-                'your-resource-group-name',
+                self.resource_group,
                 'new-vm-name',
                 {
-                    "location": 'your-region',
+                    "location": self.region,
                     "storage_profile": {
                         "os_disk": {
                             "create_option": "FromImage",
                             "image": {
-                                "id": f"/subscriptions/{self.subscription_id}/resourceGroups/your-resource-group-name/providers/Microsoft.Compute/snapshots/{snapshot_id}"
+                                "id": f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Compute/snapshots/{snapshot_id}"
                             }
                         }
                     },
